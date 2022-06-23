@@ -1,25 +1,25 @@
 const mongoose = require("mongoose");
 
 const taskShema = mongoose.Schema({
-categories: {
+  categories: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "Category"
-},
-title: String,
-text: String,
-price: String,
-completed: {
+    ref: "Category",
+  },
+  title: String,
+  text: String,
+  price: String,
+  completed: {
     type: Boolean,
-    default: false
-},
-left: {
+    default: false,
+  },
+  left: {
     type: Boolean,
-    default: false
-},
-user: {
+    default: false,
+  },
+  user: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "User"
-}
+    ref: "User",
+  },
 });
 
 const Task = mongoose.model("Task", taskShema);

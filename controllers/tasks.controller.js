@@ -12,17 +12,17 @@ module.exports.taskController = {
         price,
         completed,
         left,
-        user: req.user.id
+        user: req.user.id,
       });
       return res.json(task);
     } catch (error) {
-      return res.json({ error: "Ошибка создания задания" });
+      return res.json({ error: "Ошибка при добавлении задания" });
     }
   },
 
   getAllTasks: async (req, res) => {
     try {
-      const task = await Task.find({}).populate("categories user");
+      const task = await Task.find().populate("categories user");
       res.json(task);
     } catch (error) {
       res.json({ error: "Ошибка при вызове всех заданий" });
@@ -51,24 +51,24 @@ module.exports.taskController = {
   },
   delTask: async (req, res) => {
     try {
-     const task = await Task.findByIdAndRemove(req.params.id);
+      const task = await Task.findByIdAndRemove(req.params.id);
       res.json(task);
     } catch (error) {
-      res.json({error: "Ошибка при удалении задания"});
+      res.json({ error: "Ошибка при удалении задания" });
     }
   },
 
   //
   patchTask: async (req, res) => {
     try {
-     const task = await Task.findByIdAndUpdate(req.params.id, {
+      const task = await Task.findByIdAndUpdate(req.params.id, {
         title: req.body.title,
         text: req.body.text,
-        price: req.body.price
+        price: req.body.price,
       });
       res.json(task);
     } catch (error) {
-      res.json({error : "Ошибка при изменении задания"});
+      res.json({ error: "Ошибка при изменении задания" });
     }
   },
 };
