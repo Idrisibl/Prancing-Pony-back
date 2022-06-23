@@ -7,9 +7,7 @@ const { validationResult } = require("express-validator");
 module.exports.userController = {
   getAllUsers: async (req, res) => {
     try {
-      const users = await User.find({}).populate(
-        "bag favourites finished friends blacklist reviews rating"
-      );
+      const users = await User.find({});
       return res.json(users);
     } catch (error) {
       res.status(400).json({
