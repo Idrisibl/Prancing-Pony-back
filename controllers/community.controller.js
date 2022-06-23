@@ -1,64 +1,84 @@
-const Discussion = require("../models/Discussion.model");
+const Community = require("../models/Community.model");
 
 module.exports.communityController = {
-  postDiscussion: async (req, res) => {
+  postCommunity: async (req, res) => {
     try {
-      const { name, user, answers, watched, text } = req.body;
-      const createF = await Discussion.create({
+      const { name, emblem, description, founder } =
+        req.body;
+      const createF = await Community.create({
         name,
-        user,
-        answers,
-        watched,
-        text,
+        emblem,
+        description,
+        founder,
       });
       res.json(createF);
     } catch (err) {
-      console.error({err: "Ошибка при создании обсуждения"});
+      console.error({ err: "Ошибка при создании cообщества" });
     }
   },
-  getDiscussion: async (req, res) => {
+  getCommunity: async (req, res) => {
     try {
-      const getF = await Discussion.find({});
+      const getF = await Community.find({});
       res.json(getF);
     } catch (err) {
-      console.error({err: "Ошибка при получении обсуждений"});
+      console.error({ err: "Ошибка при получении сообщества" });
     }
   },
-  getDiscussionById: async (req, res) => {
+  getCommunityById: async (req, res) => {
     try {
-      const getByF = await Discussion.findById({
-        _id: req.params.discussionId,
+      const getByF = await Community.findById({
+        _id: req.params.id,
       });
       res.json(getByF);
     } catch (err) {
-      console.error({err: "Ошибка при получении обсуждения по id"});
+      console.error({ err: "Ошибка при получении обсуждения по id" });
     }
   },
-  
-  addAnswer: async (req, res) => {
+
+  addMember: async (req, res) => {
     try {
-      const discF = await Discussion.findById(req.params.discussionId);
-      const addF = await Discussion.findByIdAndUpdate(discF, {
-        $push: {
-          answers: req.body.answers,
+      const communityFind = await Community.findById(req.params.id);
+      const addFunction = await Community.findByIdAndUpdate(communityFind, {
+        $addToSet: {
+          members: req.body.members,
         },
       });
-      res.json(addF);
+      res.json(addFunction);
     } catch (err) {
-      console.error({err: "Ошибка при добавлении ответов"});
+      console.error({ err: "Ошибка при добавлении участников" });
     }
   },
-  addWatched: async(req, res)=>{
-      try{
-          const discF = await Discussion.findById(req.params.discussionId);
-        const addF = await Discussion.findByIdAndUpdate(discF,{
-            $push:{
-                watched: req.body.watched
-            }
-        })
-        res.json(addF)
-      } catch(err){
-          console.error({err: "Ошибка при добавлении просмотров"})
-      }
-  }
+
+  addRating: async (req, res) => {
+    try {
+      const communityFind = await Community.findById(req.params.id);
+      const addFunction = await Community.findByIdAndUpdate(communityFind, {
+        $addToSet: {
+          rating: req.body.rating,
+        },
+      });
+      res.json(addFunction);
+    } catch (error) {
+      console.error({ error: "Ошибка при добавлении новостей" });
+    }
+  },
+  deleteCommunity: async(req,res)=>{
+    try{
+      const deleteCommunityFunction = await Community.deleteOne(req.params.id)
+      res.json(deleteCommunityFunction)
+    }catch(error){
+      console.error({error:"Ошибка при удалении гильдии"})
+    }
+  },
+  editAvatar: async (req, res) => {
+    try {
+      await Community.findByIdAndUpdate(req.params.id, {
+        emblem: req.file.path,
+      });
+      const community = await Community.findById(req.params.id);
+      return res.json(community);
+    } catch (err) {
+      return res.json({ error: "Ошибка при изменении аватара" });
+    }
+  },
 };

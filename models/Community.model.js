@@ -4,29 +4,26 @@ const communitySchema = mongoose.Schema({
   name: String,
   emblem: {
     type: String,
-    default: null,
-  },
-  author: {
-    type: mongoose.SchemaTypes.ObjectId,
-    ref: "Author",
+    default: "../public/tavern.png",
   },
   description: String,
-  price: Number,
-  publicationYear: String,
-  amountPages: String,
-  size: String,
-  coverType: String,
-  left: Number,
-  discount: Number,
+  members: [{
+    type: mongoose.SchemaTypes.ObjectId,
+    ref: "User"
+  },
+],
+  founder: {
+    type: mongoose.SchemaTypes.ObjectId,
+    ref: "User"
+  },
   rating: [
     {
       type: mongoose.SchemaTypes.ObjectId,
-      ref: "Review",
+      ref: "User",
     },
   ],
-  image: [],
 });
 
-const Book = mongoose.model("Book", bookSchema);
+const Community = mongoose.model("Community", communitySchema);
 
-module.exports = Book;
+module.exports = Community;
