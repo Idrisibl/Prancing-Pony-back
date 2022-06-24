@@ -51,29 +51,18 @@ const userShema = mongoose.Schema({
       ref: "User",
     },
   ],
-  reviews: [
-    {
-      user: {
-        type: mongoose.SchemaTypes.ObjectId,
-        ref: "User",
-      },
-      text: {
-        type: String,
-        required: true,
-      },
-      replyUser: {
-        type: mongoose.SchemaTypes.ObjectId,
-        ref: "User",
-      },
-      grade: Number,
-    },
-  ],
   roles: [
     {
       type: String,
       ref: "Role",
     },
   ],
+  responses: [
+    {
+      type: mongoose.SchemaTypes.ObjectId,
+      ref: "User",
+    }
+  ]
 });
 
 const User = mongoose.model("User", userShema);
