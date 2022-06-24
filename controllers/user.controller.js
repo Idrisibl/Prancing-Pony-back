@@ -124,30 +124,186 @@ module.exports.userController = {
     }
   },
 
-  //   editAvatar: async (req, res) => {
-  //     try {
-  //       await User.findByIdAndUpdate(req.params.id, {
-  //         avatar: req.file.path,
-  //       });
-  //       const user = await User.findById(req.params.id);
-  //       return res.json(user);
-  //     } catch (err) {
-  //       return res.json({ error: err.message });
-  //     }
-  //   },
+  editAvatar: async (req, res) => {
+    try {
+      await User.findByIdAndUpdate(req.params.id, {
+        avatar: req.file.path,
+      });
+      const user = await User.findById(req.params.id);
+      return res.json(user);
+    } catch (error) {
+      return res.json({ error: error.message });
+    }
+  },
 
-  //   editUser: async (req, res) => {
-  //     try {
-  //       const user = await User.findByIdAndUpdate(req.params.id, {
-  //         name: req.body.name,
-  //         lastname: req.body.lastname,
-  //         email: req.body.email,
-  //         tel: req.body.tel,
-  //         password: req.body.password,
-  //       });
-  //       return res.json(user);
-  //     } catch (err) {
-  //       return res.json({ error: err.message });
-  //     }
-  //   },
+  editUser: async (req, res) => {
+    try {
+      const user = await User.findByIdAndUpdate(req.params.id, {
+        name: req.body.name,
+        lastname: req.body.lastname,
+        email: req.body.email,
+        tel: req.body.tel,
+        password: req.body.password,
+      });
+      return res.json(user);
+    } catch (error) {
+      return res.json({ error: error.message });
+    }
+  },
+
+  fillTheBag: async (req, res) => {
+    try {
+      const user = await User.findByIdAndUpdate(req.params.id, {
+        $addToSet: {
+          bag: req.body.bag,
+        },
+      });
+      return res.json(user);
+    } catch (error) {
+      return res.json({ error: error.message });
+    }
+  },
+
+  removeFromBag: async (req, res) => {
+    try {
+      const user = await User.findByIdAndUpdate(req.params.id, {
+        $pull: {
+          bag: req.body.bag,
+        },
+      });
+      return res.json(user);
+    } catch (error) {
+      return res.json({ error: error.message });
+    }
+  },
+
+  addToFavourite: async (req, res) => {
+    try {
+      const user = await User.findByIdAndUpdate(req.params.id, {
+        $addToSet: {
+          favourites: req.body.favourites,
+        },
+      });
+      return res.json(user);
+    } catch (error) {
+      return res.json({ error: error.message });
+    }
+  },
+
+  removeFromFavourite: async (req, res) => {
+    try {
+      const user = await User.findByIdAndUpdate(req.params.id, {
+        $pull: {
+          favourites: req.body.favourites,
+        },
+      });
+      return res.json(user);
+    } catch (error) {
+      return res.json({ error: error.message });
+    }
+  },
+
+  addToFinished: async (req, res) => {
+    try {
+      const user = await User.findByIdAndUpdate(req.params.id, {
+        $addToSet: {
+          finished: req.body.finished,
+        },
+      });
+      return res.json(user);
+    } catch (error) {
+      return res.json({ error: error.message });
+    }
+  },
+
+  addToFriends: async (req, res) => {
+    try {
+      const user = await User.findByIdAndUpdate(req.params.id, {
+        $addToSet: {
+          friends: req.body.friends,
+        },
+      });
+      return res.json(user);
+    } catch (error) {
+      return res.json({ error: error.message });
+    }
+  },
+
+  removeFromFriends: async (req, res) => {
+    try {
+      const user = await User.findByIdAndUpdate(req.params.id, {
+        $pull: {
+          friends: req.body.friends,
+        },
+      });
+      return res.json(user);
+    } catch (error) {
+      return res.json({ error: error.message });
+    }
+  },
+
+  addToBlacklist: async (req, res) => {
+    try {
+      const user = await User.findByIdAndUpdate(req.params.id, {
+        $addToSet: {
+          blacklist: req.body.blacklist,
+        },
+      });
+      return res.json(user);
+    } catch (error) {
+      return res.json({ error: error.message });
+    }
+  },
+
+  removeFromBlacklist: async (req, res) => {
+    try {
+      const user = await User.findByIdAndUpdate(req.params.id, {
+        $pull: {
+          blacklist: req.body.blacklist,
+        },
+      });
+      return res.json(user);
+    } catch (error) {
+      return res.json({ error: error.message });
+    }
+  },
+
+  addToRating: async (req, res) => {
+    try {
+      const user = await User.findByIdAndUpdate(req.params.id, {
+        $addToSet: {
+          rating: req.body.rating,
+        },
+      });
+      return res.json(user);
+    } catch (error) {
+      return res.json({ error: error.message });
+    }
+  },
+
+  addToResponces: async (req, res) => {
+    try {
+      const user = await User.findByIdAndUpdate(req.params.id, {
+        $addToSet: {
+          responces: req.body.responces,
+        },
+      });
+      return res.json(user);
+    } catch (error) {
+      return res.json({ error: error.message });
+    }
+  },
+
+  removeFromResponces: async (req, res) => {
+    try {
+      const user = await User.findByIdAndUpdate(req.params.id, {
+        $pull: {
+          responces: req.body.responces,
+        },
+      });
+      return res.json(user);
+    } catch (error) {
+      return res.json({ error: error.message });
+    }
+  },
 };
