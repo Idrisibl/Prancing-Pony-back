@@ -64,7 +64,7 @@ module.exports.communityController = {
   },
   deleteCommunity: async(req,res)=>{
     try{
-      const deleteCommunityFunction = await Community.deleteOne(req.params.id)
+      const deleteCommunityFunction = await Community.findByIdAndRemove(req.params.id)
       res.json(deleteCommunityFunction)
     }catch(error){
       console.error({error:"Ошибка при удалении гильдии"})

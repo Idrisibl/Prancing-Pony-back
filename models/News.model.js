@@ -16,6 +16,11 @@ const newsSchema = mongoose.Schema({
             }]
         
       ,
+      dislikes:[{
+        type: mongoose.SchemaTypes.ObjectId,
+        ref: "User",
+        default: null
+    }]
 })
 const News = mongoose.model("News", newsSchema);
 

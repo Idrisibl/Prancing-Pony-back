@@ -3,10 +3,10 @@ const News = require("../models/News.model");
 module.exports.newsController = {
   postNews: async (req, res) => {
     try {
-      const { community, emblem, title, text, likes } = req.body;
+      const { community, title, text, likes } = req.body;
       const createNews = await News.create({
         community,
-        emblem,
+        emblem: req.file.path,
         title,
         text,
         likes,
@@ -74,7 +74,7 @@ module.exports.newsController = {
   },
   deleteNews: async(req,res)=>{
     try{
-      const deleteNewsFunction = await News.deleteOne(req.params.id)
+      const deleteNewsFunction = await News.findByIdAndRemove(req.params.id)
       res.json(deleteNewsFunction)
     }catch(error){
       console.error({error:"Ошибка при удалении новостей"})
