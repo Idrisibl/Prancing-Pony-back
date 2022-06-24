@@ -1,5 +1,5 @@
 const { Router } = require("express");
-const { communityController } = require("../controllers/community.controller");
+const { communityController } = require("../controllers/communities.controller");
 const authMiddleware = require("../middlewares/auth.middleware")
 const fileMiddleware = require("../middlewares/file.middleware")
 
