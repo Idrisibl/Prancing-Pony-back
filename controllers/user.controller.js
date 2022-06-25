@@ -2,7 +2,6 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const User = require("../models/User.model");
 const Role = require("../models/Role.model");
-const { validationResult } = require("express-validator");
 
 module.exports.userController = {
   getAllUsers: async (req, res) => {
@@ -31,14 +30,6 @@ module.exports.userController = {
   },
 
   registerUser: async (req, res) => {
-    const errors = validationResult(req);
-
-    if (!errors.isEmpty()) {
-      return res
-        .status(400)
-        .json({ message: "Ошибка при регистрации", errors });
-    }
-
     try {
       const { password, name, lastname, email, tel } = req.body;
       const userRole = await Role.findOne({ value: "USER" });
@@ -72,13 +63,6 @@ module.exports.userController = {
   login: async (req, res) => {
     try {
       const { email, password } = req.body;
-      const errors = validationResult(req);
-
-      if (!errors.isEmpty()) {
-        return res
-          .status(401)
-          .json({ message: "Ошибка при авторизации", errors });
-      }
 
       const candidate = await User.findOne({ email });
 
@@ -126,10 +110,10 @@ module.exports.userController = {
 
   editAvatar: async (req, res) => {
     try {
-      await User.findByIdAndUpdate(req.params.id, {
+      await User.findByIdAndUpdate(req.user.id, {
         avatar: req.file.path,
       });
-      const user = await User.findById(req.params.id);
+      const user = await User.findById(req.user.id);
       return res.json(user);
     } catch (error) {
       return res.json({ error: error.message });
@@ -138,7 +122,7 @@ module.exports.userController = {
 
   editUser: async (req, res) => {
     try {
-      const user = await User.findByIdAndUpdate(req.params.id, {
+      const user = await User.findByIdAndUpdate(req.user.id, {
         name: req.body.name,
         lastname: req.body.lastname,
         email: req.body.email,
@@ -153,7 +137,7 @@ module.exports.userController = {
 
   fillTheBag: async (req, res) => {
     try {
-      const user = await User.findByIdAndUpdate(req.params.id, {
+      const user = await User.findByIdAndUpdate(req.user.id, {
         $addToSet: {
           bag: req.body.bag,
         },
@@ -166,7 +150,7 @@ module.exports.userController = {
 
   removeFromBag: async (req, res) => {
     try {
-      const user = await User.findByIdAndUpdate(req.params.id, {
+      const user = await User.findByIdAndUpdate(req.user.id, {
         $pull: {
           bag: req.body.bag,
         },
@@ -179,7 +163,7 @@ module.exports.userController = {
 
   addToFavourite: async (req, res) => {
     try {
-      const user = await User.findByIdAndUpdate(req.params.id, {
+      const user = await User.findByIdAndUpdate(req.user.id, {
         $addToSet: {
           favourites: req.body.favourites,
         },
@@ -192,7 +176,7 @@ module.exports.userController = {
 
   removeFromFavourite: async (req, res) => {
     try {
-      const user = await User.findByIdAndUpdate(req.params.id, {
+      const user = await User.findByIdAndUpdate(req.user.id, {
         $pull: {
           favourites: req.body.favourites,
         },
@@ -205,7 +189,7 @@ module.exports.userController = {
 
   addToFinished: async (req, res) => {
     try {
-      const user = await User.findByIdAndUpdate(req.params.id, {
+      const user = await User.findByIdAndUpdate(req.user.id, {
         $addToSet: {
           finished: req.body.finished,
         },
@@ -218,7 +202,7 @@ module.exports.userController = {
 
   addToFriends: async (req, res) => {
     try {
-      const user = await User.findByIdAndUpdate(req.params.id, {
+      const user = await User.findByIdAndUpdate(req.user.id, {
         $addToSet: {
           friends: req.body.friends,
         },
@@ -231,7 +215,7 @@ module.exports.userController = {
 
   removeFromFriends: async (req, res) => {
     try {
-      const user = await User.findByIdAndUpdate(req.params.id, {
+      const user = await User.findByIdAndUpdate(req.user.id, {
         $pull: {
           friends: req.body.friends,
         },
@@ -244,7 +228,7 @@ module.exports.userController = {
 
   addToBlacklist: async (req, res) => {
     try {
-      const user = await User.findByIdAndUpdate(req.params.id, {
+      const user = await User.findByIdAndUpdate(req.user.id, {
         $addToSet: {
           blacklist: req.body.blacklist,
         },
@@ -257,7 +241,7 @@ module.exports.userController = {
 
   removeFromBlacklist: async (req, res) => {
     try {
-      const user = await User.findByIdAndUpdate(req.params.id, {
+      const user = await User.findByIdAndUpdate(req.user.id, {
         $pull: {
           blacklist: req.body.blacklist,
         },
