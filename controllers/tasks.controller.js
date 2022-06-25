@@ -65,6 +65,8 @@ module.exports.taskController = {
         title: req.body.title,
         text: req.body.text,
         price: req.body.price,
+        left: req.body.left,
+        completed: req.body.completed
       });
       res.json(task);
     } catch (error) {

@@ -14,7 +14,7 @@ const taskShema = mongoose.Schema({
   },
   left: {
     type: Boolean,
-    default: false,
+    default: true,
   },
   user: {
     type: mongoose.Schema.Types.ObjectId,
