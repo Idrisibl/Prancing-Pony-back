@@ -7,7 +7,7 @@ const taskShema = mongoose.Schema({
   },
   title: String,
   text: String,
-  price: String,
+  price: Number,
   completed: {
     type: Boolean,
     default: false,
