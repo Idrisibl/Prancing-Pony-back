@@ -1,6 +1,7 @@
 const { Router } = require("express");
 const { userController } = require("../controllers/user.controller");
 const fileMiddleware = require("../middlewares/file.middleware");
+const authMiddleware = require("../middlewares/auth.middleware");
 
 const router = Router();
 
@@ -16,15 +17,30 @@ router.patch(
 router.patch("/editUser", userController.editUser);
 router.patch("/bag", userController.fillTheBag);
 router.patch("/bag/remove", userController.removeFromBag);
-router.patch("/favoutire", userController.addToFavourite);
-router.patch("/favoutire/remove", userController.removeFromFavourite);
-router.patch("/finished", userController.addToFinished);
-router.patch("/friends", userController.addToFriends);
-router.patch("/friends/remove", userController.removeFromFriends);
-router.patch("/blacklist", userController.addToBlacklist);
-router.patch("/blacklist/remove", userController.removeFromBlacklist);
+router.patch("/favoutire", authMiddleware, userController.addToFavourite);
+router.patch(
+  "/favoutire/remove",
+  authMiddleware,
+  userController.removeFromFavourite
+);
+router.patch("/finished/:taskId", authMiddleware, userController.addToFinished);
+router.patch("/friends", authMiddleware, userController.addToFriends);
+router.patch(
+  "/friends/remove",
+  authMiddleware,
+  userController.removeFromFriends
+);
+router.patch("/blacklist", authMiddleware, userController.addToBlacklist);
+router.patch(
+  "/blacklist/remove",
+  authMiddleware,
+  userController.removeFromBlacklist
+);
 router.patch("/rating/:id", userController.addToRating);
 router.patch("/responces/:id", userController.addToResponces);
 router.patch("/responces/remove/:id", userController.removeFromResponces);
+router.patch("/confirmation/:id", userController.addToConfirmation);
+router.patch("/confirmation/remove/:id", userController.removeFromConfirmation);
+router.patch("/addWallet", authMiddleware, userController.addWallet);
 
 module.exports = router;

@@ -2,11 +2,14 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const User = require("../models/User.model");
 const Role = require("../models/Role.model");
+const Task = require("../models/Task.model");
 
 module.exports.userController = {
   getAllUsers: async (req, res) => {
     try {
-      const users = await User.find({});
+      const users = await User.find({}).populate(
+        "bag favourites finished friends blacklist rating responces"
+      );
       return res.json(users);
     } catch (error) {
       res.status(400).json({
@@ -19,7 +22,7 @@ module.exports.userController = {
     try {
       const { id } = req.params;
       const user = await User.findById(id).populate(
-        "bag favourites finished friends blacklist reviews rating"
+        "bag favourites finished friends blacklist rating responces"
       );
       res.json(user);
     } catch (error) {
@@ -189,11 +192,16 @@ module.exports.userController = {
 
   addToFinished: async (req, res) => {
     try {
+      const task = await Task.findById(req.params.taskId);
+      const userId = await User.findById(req.user.id);
+
       const user = await User.findByIdAndUpdate(req.user.id, {
         $addToSet: {
-          finished: req.body.finished,
+          finished: req.params.taskId,
         },
+        wallet: userId.wallet + task.price,
       });
+
       return res.json(user);
     } catch (error) {
       return res.json({ error: error.message });
@@ -288,6 +296,47 @@ module.exports.userController = {
       return res.json(user);
     } catch (error) {
       return res.json({ error: error.message });
+    }
+  },
+
+  addToConfirmation: async (req, res) => {
+    try {
+      const user = await User.findByIdAndUpdate(req.params.id, {
+        $addToSet: {
+          confirmation: req.body.confirmation,
+        },
+      });
+      return res.json(user);
+    } catch (error) {
+      return res.json({ error: error.message });
+    }
+  },
+
+  removeFromConfirmation: async (req, res) => {
+    try {
+      const user = await User.findByIdAndUpdate(req.params.id, {
+        $pull: {
+          confirmation: req.body.confirmation,
+        },
+      });
+      return res.json(user);
+    } catch (error) {
+      return res.json({ error: error.message });
+    }
+  },
+
+  addWallet: async (req, res) => {
+    try {
+      const userId = await User.findById(req.user.id);
+      userId.wallet += req.body.wallet;
+
+      const user = await User.findByIdAndUpdate(req.user.id, {
+        wallet: userId.wallet,
+      });
+
+      res.json(user);
+    } catch (error) {
+      res.json({ error: "ошибка при пополнении баланса" });
     }
   },
 };
