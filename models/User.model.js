@@ -38,7 +38,12 @@ const userShema = mongoose.Schema({
       ref: "Task",
     },
   ],
-  rating: [],
+  rating: [
+    {
+      type: mongoose.SchemaTypes.ObjectId,
+      ref: "Review",
+    },
+  ],
   friends: [
     {
       type: mongoose.SchemaTypes.ObjectId,
@@ -61,8 +66,14 @@ const userShema = mongoose.Schema({
     {
       type: mongoose.SchemaTypes.ObjectId,
       ref: "User",
-    }
-  ]
+    },
+  ],
+  confirmation: [
+    {
+      type: mongoose.SchemaTypes.ObjectId,
+      ref: "User",
+    },
+  ],
 });
 
 const User = mongoose.model("User", userShema);
