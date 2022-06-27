@@ -11,10 +11,12 @@ router.post("/register", userController.registerUser);
 router.post("/login", userController.login);
 router.patch(
   "/avatar",
+  authMiddleware,
   fileMiddleware.single("avatar"),
   userController.editAvatar
 );
 router.patch("/editUser", userController.editUser);
+router.patch("/info", authMiddleware, userController.postInfo);
 router.patch("/bag", userController.fillTheBag);
 router.patch("/bag/remove", userController.removeFromBag);
 router.patch("/favoutire", authMiddleware, userController.addToFavourite);
