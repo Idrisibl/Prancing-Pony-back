@@ -11,6 +11,7 @@ router.post("/register", userController.registerUser);
 router.post("/login", userController.login);
 router.patch(
   "/avatar",
+  authMiddleware,
   fileMiddleware.single("avatar"),
   userController.editAvatar
 );

@@ -8,7 +8,7 @@ module.exports.userController = {
   getAllUsers: async (req, res) => {
     try {
       const users = await User.find({}).populate(
-        "bag favourites finished friends blacklist rating responces"
+        "bag favourites finished friends blacklist rating responses confirmation"
       );
       return res.json(users);
     } catch (error) {
@@ -22,7 +22,7 @@ module.exports.userController = {
     try {
       const { id } = req.params;
       const user = await User.findById(id).populate(
-        "bag favourites finished friends blacklist rating responces"
+        "bag favourites finished friends blacklist rating responses confirmation"
       );
       res.json(user);
     } catch (error) {
