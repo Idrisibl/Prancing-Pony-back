@@ -1,24 +1,31 @@
 const Task = require("../models/Task.model");
+const User = require("../models/User.model");
 
 module.exports.taskController = {
   createTask: async (req, res) => {
-    const { categories, title, text, price, completed, left } = req.body;
-
-    try {
-      const task = await Task.create({
-        categories,
-        title,
-        text,
-        price,
-        completed,
-        left,
-        user: req.user.id,
-      });
-      return res.json(task);
-    } catch (error) {
-      return res.json({ error: "Ошибка при добавлении задания" });
-    }
-  },
+      const { categories, title, text, price } = req.body;
+  
+      try {
+        const user = await User.findById(req.user.id);
+  
+        const task = await Task.create({
+          categories,
+          title,
+          text,
+          price,
+          user: req.user.id,
+        });
+        const wallet = user.wallet - task.price;
+  
+        await User.findByIdAndUpdate(req.user.id, {
+          wallet,
+        });
+  
+        return res.json(task);
+      } catch (error) {
+        return res.json({ error: "Ошибка при добавлении задания" });
+      }
+    },
 
   getAllTasks: async (req, res) => {
     try {
@@ -65,6 +72,8 @@ module.exports.taskController = {
         title: req.body.title,
         text: req.body.text,
         price: req.body.price,
+        left: req.body.left,
+        completed: req.body.completed,
       });
       res.json(task);
     } catch (error) {
