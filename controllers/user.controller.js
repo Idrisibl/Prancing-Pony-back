@@ -32,6 +32,20 @@ module.exports.userController = {
     }
   },
 
+  postInfo: async (req, res) => {
+    try {
+      const user = await User.findByIdAndUpdate(req.user.id, {
+        info: req.body.info,
+      });
+
+      return res.json(user);
+    } catch (error) {
+      res.status(400).json({
+        error: error.message,
+      });
+    }
+  },
+
   registerUser: async (req, res) => {
     try {
       const { password, name, lastname, email, tel } = req.body;

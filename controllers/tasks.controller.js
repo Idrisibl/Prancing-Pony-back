@@ -3,11 +3,12 @@ const User = require("../models/User.model");
 
 module.exports.taskController = {
   createTask: async (req, res) => {
-      const { categories, title, text, price } = req.body;
-  
-      try {
-        const user = await User.findById(req.user.id);
-  
+    const { categories, title, text, price } = req.body;
+
+    try {
+      const user = await User.findById(req.user.id);
+
+      if (user.wallet >= price && user.wallet !== 0) {
         const task = await Task.create({
           categories,
           title,
@@ -16,16 +17,16 @@ module.exports.taskController = {
           user: req.user.id,
         });
         const wallet = user.wallet - task.price;
-  
+
         await User.findByIdAndUpdate(req.user.id, {
           wallet,
         });
-  
         return res.json(task);
-      } catch (error) {
-        return res.json({ error: "Ошибка при добавлении задания" });
       }
-    },
+    } catch (error) {
+      return res.json({ error: "Ошибка при добавлении задания" });
+    }
+  },
 
   getAllTasks: async (req, res) => {
     try {

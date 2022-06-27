@@ -10,6 +10,10 @@ const userShema = mongoose.Schema({
     unique: true,
   },
   lastname: String,
+  info: {
+    type: String,
+    default: null,
+  },
   tel: String,
   email: {
     type: String,
