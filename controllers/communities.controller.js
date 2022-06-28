@@ -18,7 +18,7 @@ module.exports.communityController = {
   },
   getCommunity: async (req, res) => {
     try {
-      const getF = await Community.find({});
+      const getF = await Community.find({}).populate('founder members');
       res.json(getF);
     } catch (err) {
       console.error({ err: "Ошибка при получении сообщества" });
@@ -28,7 +28,7 @@ module.exports.communityController = {
     try {
       const getByF = await Community.findById({
         _id: req.params.id,
-      });
+      }).populate("founder members");
       res.json(getByF);
     } catch (err) {
       console.error({ err: "Ошибка при получении обсуждения по id" });

@@ -3,19 +3,18 @@ const News = require("../models/News.model");
 module.exports.newsController = {
   postNews: async (req, res) => {
     try {
-      const { community, title, text, likes } = req.body;
+      const { community, title, text } = req.body;
       const createNews = await News.create({
         community,
-        emblem: req.file.path,
         title,
         text,
-        likes,
       });
       res.json(createNews);
     } catch (error) {
       console.error({ error: "Ошибка при создании новостей" });
     }
   },
+
   getAllNews: async (req, res) => {
     try {
       const getFunction = await News.find({});
@@ -24,30 +23,30 @@ module.exports.newsController = {
       console.error({ error: "Ошибка при получении новостей" });
     }
   },
-  getNewsById: async (req, res) => {
+  getNewsByCommunity: async (req, res) => {
     try {
-      const getNewsById = await News.findById(req.params.id);
-      res.json(getNewsById)
+      const getNews = await News.find({ community: req.params.id });
+      res.json(getNews);
     } catch (error) {
       console.error({ error: "Ошибка при получении новостей по id" });
     }
   },
   addLike: async (req, res) => {
     try {
-        const like = await News.findByIdAndUpdate(req.params.id, {
-            $addToSet: { likes: req.body.likes },
-          });
-          res.json(like)
+      const like = await News.findByIdAndUpdate(req.params.id, {
+        $addToSet: { likes: req.body.likes },
+      });
+      res.json(like);
     } catch (error) {
       console.error({ error: "Ошибка при добавлении лайков" });
     }
   },
   deleteLike: async (req, res) => {
     try {
-        const likeDel = await News.findByIdAndUpdate(req.params.id, {
-            $pull: { likes: req.body.likes },
-          });
-          res.json(likeDel)
+      const likeDel = await News.findByIdAndUpdate(req.params.id, {
+        $pull: { likes: req.body.likes },
+      });
+      res.json(likeDel);
     } catch (error) {
       console.error({ error: "Ошибка при удалении лайков" });
     }
@@ -59,7 +58,7 @@ module.exports.newsController = {
       });
       res.json(dilike);
     } catch (error) {
-      res.json({error: 'Ошибка добавления дизлайков'});
+      res.json({ error: "Ошибка добавления дизлайков" });
     }
   },
   delDislike: async (req, res) => {
@@ -69,15 +68,15 @@ module.exports.newsController = {
       });
       res.json(dislikeDel);
     } catch (error) {
-      res.json({error: 'Ошибка удаления дизлайка'});
+      res.json({ error: "Ошибка удаления дизлайка" });
     }
   },
-  deleteNews: async(req,res)=>{
-    try{
-      const deleteNewsFunction = await News.findByIdAndRemove(req.params.id)
-      res.json(deleteNewsFunction)
-    }catch(error){
-      console.error({error:"Ошибка при удалении новостей"})
+  deleteNews: async (req, res) => {
+    try {
+      const deleteNewsFunction = await News.findByIdAndRemove(req.params.id);
+      res.json(deleteNewsFunction);
+    } catch (error) {
+      console.error({ error: "Ошибка при удалении новостей" });
     }
   },
 };
