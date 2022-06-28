@@ -5,10 +5,7 @@ const userShema = mongoose.Schema({
     type: String,
     default: "public\\user.png",
   },
-  name: {
-    type: String,
-    unique: true,
-  },
+  name: String,
   lastname: String,
   info: {
     type: String,
@@ -42,12 +39,16 @@ const userShema = mongoose.Schema({
       ref: "Task",
     },
   ],
-  rating: [
+  failed: [
     {
       type: mongoose.SchemaTypes.ObjectId,
-      ref: "Review",
+      ref: "Task",
     },
   ],
+  rating: {
+    type: Number,
+    default: 0,
+  },
   friends: [
     {
       type: mongoose.SchemaTypes.ObjectId,

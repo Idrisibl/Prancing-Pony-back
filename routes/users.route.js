@@ -15,8 +15,8 @@ router.patch(
   fileMiddleware.single("avatar"),
   userController.editAvatar
 );
-router.patch("/editUser", userController.editUser);
-router.patch("/info", authMiddleware, userController.postInfo);
+router.patch("/editUser", authMiddleware, userController.editUser);
+router.patch("/editInfo", authMiddleware, userController.postInfo);
 router.patch("/bag", userController.fillTheBag);
 router.patch("/bag/remove", userController.removeFromBag);
 router.patch("/favoutire", authMiddleware, userController.addToFavourite);
@@ -26,6 +26,7 @@ router.patch(
   userController.removeFromFavourite
 );
 router.patch("/finished/:taskId", authMiddleware, userController.addToFinished);
+router.patch("/failed", authMiddleware, userController.addToFailed);
 router.patch("/friends", authMiddleware, userController.addToFriends);
 router.patch(
   "/friends/remove",

@@ -34,9 +34,15 @@ module.exports.userController = {
 
   postInfo: async (req, res) => {
     try {
-      const user = await User.findByIdAndUpdate(req.user.id, {
-        info: req.body.info,
-      });
+      const user = await User.findByIdAndUpdate(
+        req.user.id,
+        {
+          info: req.body.info,
+        },
+        {
+          new: true,
+        }
+      );
 
       return res.json(user);
     } catch (error) {
@@ -139,13 +145,16 @@ module.exports.userController = {
 
   editUser: async (req, res) => {
     try {
-      const user = await User.findByIdAndUpdate(req.user.id, {
-        name: req.body.name,
-        lastname: req.body.lastname,
-        email: req.body.email,
-        tel: req.body.tel,
-        password: req.body.password,
-      });
+      const user = await User.findByIdAndUpdate(
+        req.user.id,
+        {
+          name: req.body.name,
+          lastname: req.body.lastname,
+          email: req.body.email,
+          tel: req.body.tel,
+        },
+        { new: true }
+      );
       return res.json(user);
     } catch (error) {
       return res.json({ error: error.message });
@@ -214,6 +223,22 @@ module.exports.userController = {
           finished: req.params.taskId,
         },
         wallet: userId.wallet + task.price,
+        $inc: { rating: 1 },
+      });
+
+      return res.json(user);
+    } catch (error) {
+      return res.json({ error: error.message });
+    }
+  },
+
+  addToFailed: async (req, res) => {
+    try {
+      const user = await User.findByIdAndUpdate(req.user.id, {
+        $addToSet: {
+          finished: req.params.taskId,
+        },
+        $inc: { rating: -2 },
       });
 
       return res.json(user);
