@@ -73,10 +73,8 @@ module.exports.taskController = {
         title: req.body.title,
         text: req.body.text,
         price: req.body.price,
-        left: req.body.left,
-        completed: req.body.completed,
-      });
-      res.json(task);
+      }, {new: true}).populate("categories user");
+      return res.json(task);
     } catch (error) {
       res.json({ error: "Ошибка при изменении задания" });
     }
