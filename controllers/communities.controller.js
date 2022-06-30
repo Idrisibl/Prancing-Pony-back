@@ -3,13 +3,12 @@ const Community = require("../models/Community.model");
 module.exports.communityController = {
   postCommunity: async (req, res) => {
     try {
-      const { name, emblem, description, founder } =
-        req.body;
+      const { name, emblem, description, founder } = req.body;
       const createF = await Community.create({
         name,
         emblem,
         description,
-        founder,
+        founder: req.user.id,
       });
       res.json(createF);
     } catch (err) {
@@ -18,7 +17,7 @@ module.exports.communityController = {
   },
   getCommunity: async (req, res) => {
     try {
-      const getF = await Community.find({}).populate('founder members');
+      const getF = await Community.find({}).populate("founder members");
       res.json(getF);
     } catch (err) {
       console.error({ err: "Ошибка при получении сообщества" });
@@ -62,12 +61,14 @@ module.exports.communityController = {
       console.error({ error: "Ошибка при добавлении новостей" });
     }
   },
-  deleteCommunity: async(req,res)=>{
-    try{
-      const deleteCommunityFunction = await Community.findByIdAndRemove(req.params.id)
-      res.json(deleteCommunityFunction)
-    }catch(error){
-      console.error({error:"Ошибка при удалении гильдии"})
+  deleteCommunity: async (req, res) => {
+    try {
+      const deleteCommunityFunction = await Community.findByIdAndRemove(
+        req.params.id
+      );
+      res.json(deleteCommunityFunction);
+    } catch (error) {
+      console.error({ error: "Ошибка при удалении гильдии" });
     }
   },
   editAvatar: async (req, res) => {
