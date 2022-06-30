@@ -12,6 +12,10 @@ const communitySchema = mongoose.Schema({
     ref: "User"
   },
 ],
+requests: [{
+    type: mongoose.SchemaTypes.ObjectId,
+    ref: "User"
+}],
   founder: {
     type: mongoose.SchemaTypes.ObjectId,
     ref: "User"

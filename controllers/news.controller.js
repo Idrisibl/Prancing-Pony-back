@@ -33,9 +33,15 @@ module.exports.newsController = {
   },
   addLike: async (req, res) => {
     try {
-      const like = await News.findByIdAndUpdate(req.params.id, {
-        $addToSet: { likes: req.body.likes },
-      });
+      const like = await News.findByIdAndUpdate(
+        req.params.id,
+        {
+          $addToSet: { likes: req.body.likes },
+        },
+        {
+          new: true,
+        }
+      );
       res.json(like);
     } catch (error) {
       console.error({ error: "Ошибка при добавлении лайков" });
@@ -43,12 +49,19 @@ module.exports.newsController = {
   },
   deleteLike: async (req, res) => {
     try {
-      const likeDel = await News.findByIdAndUpdate(req.params.id, {
-        $pull: { likes: req.body.likes },
-      });
+      console.log(req.body.likes);
+      const likeDel = await News.findByIdAndUpdate(
+        req.params.id,
+        {
+          $pull: { likes: req.body.likes },
+        },
+        {
+          new: true,
+        }
+      );
       res.json(likeDel);
     } catch (error) {
-      console.error({ error: "Ошибка при удалении лайков" });
+      res.status(504).json({ error: "Ошибка при удалении лайков" });
     }
   },
   addDislike: async (req, res) => {
