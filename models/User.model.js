@@ -69,8 +69,11 @@ const userShema = mongoose.Schema({
   ],
   responses: [
     {
-      type: mongoose.SchemaTypes.ObjectId,
-      ref: "User",
+      user: {
+        type: mongoose.SchemaTypes.ObjectId,
+        ref: "User",
+      },
+      text: String,
     },
   ],
   confirmation: [

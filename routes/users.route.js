@@ -18,7 +18,7 @@ router.patch(
 );
 router.patch("/editUser", authMiddleware, userController.editUser);
 router.patch("/editInfo", authMiddleware, userController.postInfo);
-router.patch("/bag", userController.fillTheBag);
+router.patch("/bag", authMiddleware, userController.fillTheBag);
 router.patch("/bag/remove", userController.removeFromBag);
 router.patch("/favoutire", authMiddleware, userController.addToFavourite);
 router.patch(
@@ -41,10 +41,19 @@ router.patch(
   userController.removeFromBlacklist
 );
 router.patch("/rating/:id", userController.addToRating);
-router.patch("/responces/:id", userController.addToResponces);
-router.patch("/responces/remove/:id", userController.removeFromResponces);
+router.patch("/responses/:id", authMiddleware, userController.addToResponces);
+router.patch(
+  "/responses/remove/:id",
+  authMiddleware,
+  userController.removeFromResponces
+);
 router.patch("/confirmation/:id", userController.addToConfirmation);
-router.patch("/confirmation/remove/:id", userController.removeFromConfirmation);
+router.patch(
+  "/confirmation/remove/:id",
+  authMiddleware,
+  userController.removeFromConfirmation
+);
 router.patch("/addWallet", authMiddleware, userController.addWallet);
+router.patch("/wallet/deduct", authMiddleware, userController.deductFromWallet);
 
 module.exports = router;

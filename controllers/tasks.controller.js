@@ -16,11 +16,13 @@ module.exports.taskController = {
           price,
           user: req.user.id,
         });
-        const wallet = user.wallet - task.price;
+        // const wallet = user.wallet - task.price;
 
-        await User.findByIdAndUpdate(req.user.id, {
-          wallet,
-        });
+        // await User.findByIdAndUpdate(req.user.id, {
+        //   wallet,
+        // }, {
+        //   new: true
+        // });
         return res.json(task);
       }
     } catch (error) {
@@ -39,9 +41,17 @@ module.exports.taskController = {
 
   getTaskById: async (req, res) => {
     try {
-      const task = await Task.findById(req.params.id).populate(
-        "categories user"
-      );
+      const task = await Task.findById(req.params.id)
+        .populate("categories user")
+        .populate({
+          path: "user",
+          populate: {
+            path: "responses",
+            populate: {
+              path: "user",
+            },
+          },
+        });
       res.json(task);
     } catch (error) {
       res.json({ error: "Ошибка при вызове задания по id" });
@@ -60,6 +70,21 @@ module.exports.taskController = {
   delTask: async (req, res) => {
     try {
       const task = await Task.findByIdAndRemove(req.params.id);
+
+      const user = await User.findById(req.user.id);
+
+      const wallet = user.wallet + task.price;
+
+      await User.findByIdAndUpdate(
+        req.user.id,
+        {
+          wallet,
+        },
+        {
+          new: true,
+        }
+      );
+
       res.json(task);
     } catch (error) {
       res.json({ error: "Ошибка при удалении задания" });
