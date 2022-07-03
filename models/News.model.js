@@ -5,25 +5,13 @@ const newsSchema = mongoose.Schema({
     type: mongoose.SchemaTypes.ObjectId,
     ref: "Community",
   },
-  image: {
-    type: String,
-    default: null,
-  },
+  image: String,
   title: String,
   text: String,
   likes: [
     {
       type: mongoose.SchemaTypes.ObjectId,
       ref: "User",
-      default: null,
-    },
-  ],
-
-  dislikes: [
-    {
-      type: mongoose.SchemaTypes.ObjectId,
-      ref: "User",
-      default: null,
     },
   ],
 });

@@ -1,17 +1,22 @@
 const News = require("../models/News.model");
+const e = require("express");
 
 module.exports.newsController = {
   postNews: async (req, res) => {
     try {
       const { community, title, text } = req.body;
+      const { filename } = req.file;
+      console.log(req.file, req.body);
+      
       const createNews = await News.create({
         community,
         title,
         text,
+        image: filename,
       });
       res.json(createNews);
     } catch (error) {
-      console.error({ error: "Ошибка при создании новостей" });
+      console.error({ error: e.message });
     }
   },
 
@@ -43,12 +48,19 @@ module.exports.newsController = {
   },
   deleteLike: async (req, res) => {
     try {
-      const likeDel = await News.findByIdAndUpdate(req.params.id, {
-        $pull: { likes: req.body.likes },
-      });
+      console.log(req.body.likes);
+      const likeDel = await News.findByIdAndUpdate(
+        req.params.id,
+        {
+          $pull: { likes: req.body.likes },
+        },
+        {
+          new: true,
+        }
+      );
       res.json(likeDel);
     } catch (error) {
-      console.error({ error: "Ошибка при удалении лайков" });
+      res.status(504).json({ error: "Ошибка при удалении лайков" });
     }
   },
   addDislike: async (req, res) => {
