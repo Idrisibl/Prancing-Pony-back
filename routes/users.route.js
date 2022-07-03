@@ -18,7 +18,7 @@ router.patch(
 );
 router.patch("/editUser", authMiddleware, userController.editUser);
 router.patch("/editInfo", authMiddleware, userController.postInfo);
-router.patch("/bag", authMiddleware, userController.fillTheBag);
+router.patch("/bag/:id", authMiddleware, userController.fillTheBag);
 router.patch("/bag/remove", userController.removeFromBag);
 router.patch("/favoutire", authMiddleware, userController.addToFavourite);
 router.patch(
@@ -41,12 +41,6 @@ router.patch(
   userController.removeFromBlacklist
 );
 router.patch("/rating/:id", userController.addToRating);
-router.patch("/responses/:id", authMiddleware, userController.addToResponces);
-router.patch(
-  "/responses/remove/:id",
-  authMiddleware,
-  userController.removeFromResponces
-);
 router.patch("/confirmation/:id", userController.addToConfirmation);
 router.patch(
   "/confirmation/remove/:id",
