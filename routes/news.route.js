@@ -5,7 +5,7 @@ const fileMiddleware = require("../middlewares/file.middleware")
 
 const router = Router();
 
-router.post("/", newsController.postNews);
+router.post("/",fileMiddleware.single("image"), newsController.postNews);
 router.get("/", newsController.getAllNews);
 router.get("/community/:id", newsController.getNewsByCommunity);
 router.patch("/likes/:id",authMiddleware, newsController.addLike);

@@ -3,16 +3,18 @@ const Review = require("../models/Review.model");
 module.exports.reviewsController = {
   addReview: async (req, res) => {
     try {
-      const { text, replyUser, grade } = req.body;
+      const { text, grade } = req.body;
 
       const review = await Review.create({
         user: req.user.id,
         text,
-        replyUser,
+        replyUser: req.params.id,
         grade,
       });
 
-      return res.json(review);
+      const reviewOne = await Review.findById(review._id).populate('user replyUser');
+
+      return res.json(reviewOne);
     } catch (error) {
       return res.json({ error: error.message });
     }

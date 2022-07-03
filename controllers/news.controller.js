@@ -1,17 +1,22 @@
 const News = require("../models/News.model");
+const e = require("express");
 
 module.exports.newsController = {
   postNews: async (req, res) => {
     try {
       const { community, title, text } = req.body;
+      const { filename } = req.file;
+      console.log(req.file, req.body);
+      
       const createNews = await News.create({
         community,
         title,
         text,
+        image: filename,
       });
       res.json(createNews);
     } catch (error) {
-      console.error({ error: "Ошибка при создании новостей" });
+      console.error({ error: e.message });
     }
   },
 
@@ -33,15 +38,9 @@ module.exports.newsController = {
   },
   addLike: async (req, res) => {
     try {
-      const like = await News.findByIdAndUpdate(
-        req.params.id,
-        {
-          $addToSet: { likes: req.body.likes },
-        },
-        {
-          new: true,
-        }
-      );
+      const like = await News.findByIdAndUpdate(req.params.id, {
+        $addToSet: { likes: req.body.likes },
+      });
       res.json(like);
     } catch (error) {
       console.error({ error: "Ошибка при добавлении лайков" });

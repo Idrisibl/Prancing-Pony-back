@@ -32,6 +32,19 @@ module.exports.userController = {
     }
   },
 
+  getAuthUser: async (req, res) => {
+    try {
+      const user = await User.findById(req.user.id).populate(
+        "bag favourites finished friends blacklist rating responses confirmation"
+      );
+      res.json(user);
+    } catch (error) {
+      res.status(400).json({
+        error: `Ошибка вывода авторизованного пользователя  ${error.toString()}`,
+      });
+    }
+  },
+
   postInfo: async (req, res) => {
     try {
       const user = await User.findByIdAndUpdate(

@@ -1,3 +1,4 @@
+const { json } = require("express");
 const e = require("express");
 const Community = require("../models/Community.model");
 
@@ -5,14 +6,13 @@ module.exports.communityController = {
   postCommunity: async (req, res) => {
     try {
       const { name, description } = req.body;
-      const { filename } = req.file;
-      
       const createF = await Community.create({
         name,
-        emblem: filename,
+        emblem: req.file && req.file.filename,
         description,
         founder: req.user.id,
       });
+      //Дефолт фотка, эмблема всегда пустая
       res.json(createF);
     } catch (err) {
       console.error({ err: "Ошибка при создании cообщества" });
@@ -20,7 +20,7 @@ module.exports.communityController = {
   },
   getCommunity: async (req, res) => {
     try {
-      const getF = await Community.find({}).populate("founder members");
+      const getF = await Community.find({}).populate("founder members requests");
       res.json(getF);
     } catch (err) {
       console.error({ err: "Ошибка при получении сообщества" });
@@ -30,24 +30,52 @@ module.exports.communityController = {
     try {
       const getByF = await Community.findById({
         _id: req.params.id,
-      }).populate("founder members");
+      }).populate("founder members requests");
       res.json(getByF);
     } catch (err) {
       console.error({ err: "Ошибка при получении обсуждения по id" });
     }
   },
 
+  leaveRequest: async (req, res) => {
+    try {
+      const addFunction = await Community.findByIdAndUpdate(req.params.id, {
+        $addToSet: {
+          requests: req.body.requests,
+        },
+      });
+      console.log(req.body.members);
+      res.json(addFunction);
+    } catch (err) {
+      console.error({ err: "Ошибка при добавлении заявок" });
+    }
+  },
   addMember: async (req, res) => {
     try {
-      const communityFind = await Community.findById(req.params.id);
-      const addFunction = await Community.findByIdAndUpdate(communityFind, {
+      const addFunction = await Community.findByIdAndUpdate(req.params.id, {
         $addToSet: {
           members: req.body.members,
         },
-      });
+      },
+      );
+      console.log(req.body.members);
       res.json(addFunction);
     } catch (err) {
       console.error({ err: "Ошибка при добавлении участников" });
+    }
+  },
+  deleteFromRequest: async (req, res) => {
+    try {
+      console.log(req.body.requests);
+      const addFunction = await Community.findByIdAndUpdate(req.params.id, {
+        $pull: {
+          requests: req.body.requests,
+        },
+      },
+      );
+      res.json(addFunction);
+    } catch (err) {
+      console.error({ err: "Ошибка при удалении участников из заявок" });
     }
   },
 
@@ -83,6 +111,21 @@ module.exports.communityController = {
       return res.json(community);
     } catch (err) {
       return res.json({ error: e.message });
+    }
+  },
+  editCommunity: async (req, res) => {
+    try {
+      const community = await Community.findByIdAndUpdate(
+        req.params.id,
+        {
+          description: req.body.description,
+          name: req.body.name,
+        },
+        { new: true }
+      );
+      return res.json(community);
+    } catch (error) {
+      return res.json({ error: error.message });
     }
   },
 };
