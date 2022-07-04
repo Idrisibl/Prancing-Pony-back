@@ -23,12 +23,10 @@ const communitySchema = mongoose.Schema({
     type: mongoose.SchemaTypes.ObjectId,
     ref: "User",
   },
-  rating: [
-    {
-      type: mongoose.SchemaTypes.ObjectId,
-      ref: "User",
-    },
-  ],
+  rating: {
+    type: Number,
+    default: 0,
+  },
 });
 
 const Community = mongoose.model("Community", communitySchema);

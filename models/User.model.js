@@ -69,8 +69,15 @@ const userShema = mongoose.Schema({
   ],
   responses: [
     {
-      type: mongoose.SchemaTypes.ObjectId,
-      ref: "User",
+      user: {
+        type: mongoose.SchemaTypes.ObjectId,
+        ref: "User",
+      },
+      text: String,
+      task: {
+        type: mongoose.SchemaTypes.ObjectId,
+        ref: "Task",
+      },
     },
   ],
   confirmation: [
