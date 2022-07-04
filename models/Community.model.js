@@ -4,7 +4,7 @@ const communitySchema = mongoose.Schema({
   name: String,
   emblem: {
     type: String,
-    default: "public\\tavern.png",
+    default: "tavern.png",
   },
   description: String,
   members: [

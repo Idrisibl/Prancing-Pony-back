@@ -105,7 +105,7 @@ module.exports.communityController = {
   editAvatar: async (req, res) => {
     try {
       await Community.findByIdAndUpdate(req.params.id, {
-        emblem: req.file.path,
+        emblem: req.file.filename,
       });
       const community = await Community.findById(req.params.id);
       return res.json(community);
