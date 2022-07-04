@@ -19,15 +19,23 @@ router.patch(
 router.patch("/editUser", authMiddleware, userController.editUser);
 router.patch("/editInfo", authMiddleware, userController.postInfo);
 router.patch("/bag/:id", authMiddleware, userController.fillTheBag);
-router.patch("/bag/remove", userController.removeFromBag);
-router.patch("/favoutire", authMiddleware, userController.addToFavourite);
+router.patch("/bag/remove/:id", userController.removeFromBag);
+router.patch("/favourites", authMiddleware, userController.addToFavourite);
 router.patch(
-  "/favoutire/remove",
+  "/favourites/remove",
   authMiddleware,
   userController.removeFromFavourite
 );
-router.patch("/finished/:taskId", authMiddleware, userController.addToFinished);
-router.patch("/failed", authMiddleware, userController.addToFailed);
+router.patch(
+  "/:id/finished/:taskId",
+  authMiddleware,
+  userController.addToFinished
+);
+router.patch(
+  "/:id/failed/:taskId",
+  authMiddleware,
+  userController.addToFailed
+);
 router.patch("/friends", authMiddleware, userController.addToFriends);
 router.patch(
   "/friends/remove",
@@ -41,7 +49,11 @@ router.patch(
   userController.removeFromBlacklist
 );
 router.patch("/rating/:id", userController.addToRating);
-router.patch("/confirmation/:id", userController.addToConfirmation);
+router.patch(
+  "/confirmation/:id",
+  authMiddleware,
+  userController.addToConfirmation
+);
 router.patch(
   "/confirmation/remove/:id",
   authMiddleware,

@@ -16,6 +16,10 @@ const taskShema = mongoose.Schema({
     type: Boolean,
     default: true,
   },
+  failed: {
+    type: Boolean,
+    default: false,
+  },
   user: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",

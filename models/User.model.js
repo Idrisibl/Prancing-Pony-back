@@ -82,8 +82,14 @@ const userShema = mongoose.Schema({
   ],
   confirmation: [
     {
-      type: mongoose.SchemaTypes.ObjectId,
-      ref: "User",
+      user: {
+        type: mongoose.SchemaTypes.ObjectId,
+        ref: "User",
+      },
+      task: {
+        type: mongoose.SchemaTypes.ObjectId,
+        ref: "Task",
+      },
     },
   ],
 });

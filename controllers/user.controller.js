@@ -9,7 +9,7 @@ module.exports.userController = {
   getAllUsers: async (req, res) => {
     try {
       const users = await User.find({}).populate(
-        "bag favourites finished friends blacklist rating responses confirmation"
+        "bag favourites finished failed friends blacklist rating responses confirmation"
       );
       return res.json(users);
     } catch (error) {
@@ -23,7 +23,7 @@ module.exports.userController = {
     try {
       const { id } = req.params;
       const user = await User.findById(id).populate(
-        "bag favourites finished friends blacklist rating responses confirmation"
+        "bag favourites finished failed friends blacklist rating responses confirmation"
       );
       res.json(user);
     } catch (error) {
@@ -35,9 +35,16 @@ module.exports.userController = {
 
   getAuthUser: async (req, res) => {
     try {
-      const user = await User.findById(req.user.id).populate(
-        "bag favourites finished friends blacklist rating responses confirmation"
-      );
+      const user = await User.findById(req.user.id)
+        .populate(
+          "bag favourites finished failed friends blacklist rating responses confirmation"
+        )
+        .populate({
+          path: "confirmation",
+          populate: {
+            path: "user task",
+          },
+        });
       res.json(user);
     } catch (error) {
       res.status(400).json({
@@ -126,7 +133,7 @@ module.exports.userController = {
       };
 
       const token = await jwt.sign(payload, process.env.SECRET_JWT_KEY, {
-        expiresIn: "24h",
+        expiresIn: "90d",
       });
 
       if (!token)
@@ -177,10 +184,6 @@ module.exports.userController = {
 
   fillTheBag: async (req, res) => {
     try {
-      // await User.findByIdAndUpdate(req.user.id, {
-      //   responses: [],
-      // });
-
       const user = await User.findByIdAndUpdate(
         req.params.id,
         {
@@ -198,11 +201,15 @@ module.exports.userController = {
 
   removeFromBag: async (req, res) => {
     try {
-      const user = await User.findByIdAndUpdate(req.user.id, {
-        $pull: {
-          bag: req.body.bag,
+      const user = await User.findByIdAndUpdate(
+        req.params.id,
+        {
+          $pull: {
+            bag: req.body.bag,
+          },
         },
-      });
+        { new: true }
+      );
       return res.json(user);
     } catch (error) {
       return res.json({ error: error.message });
@@ -224,11 +231,15 @@ module.exports.userController = {
 
   removeFromFavourite: async (req, res) => {
     try {
-      const user = await User.findByIdAndUpdate(req.user.id, {
-        $pull: {
-          favourites: req.body.favourites,
+      const user = await User.findByIdAndUpdate(
+        req.user.id,
+        {
+          $pull: {
+            favourites: req.body.favourites,
+          },
         },
-      });
+        { new: true }
+      );
       return res.json(user);
     } catch (error) {
       return res.json({ error: error.message });
@@ -238,9 +249,13 @@ module.exports.userController = {
   addToFinished: async (req, res) => {
     try {
       const task = await Task.findById(req.params.taskId);
-      const userId = await User.findById(req.user.id);
+      const userId = await User.findById(req.params.id);
 
-      const user = await User.findByIdAndUpdate(req.user.id, {
+      await Task.findByIdAndUpdate(task, {
+        completed: true,
+      });
+
+      const user = await User.findByIdAndUpdate(userId, {
         $addToSet: {
           finished: req.params.taskId,
         },
@@ -256,9 +271,16 @@ module.exports.userController = {
 
   addToFailed: async (req, res) => {
     try {
-      const user = await User.findByIdAndUpdate(req.user.id, {
+      const task = await Task.findById(req.params.taskId);
+      const userId = await User.findById(req.params.id);
+
+      await Task.findByIdAndUpdate(task, {
+        failed: true,
+      });
+
+      const user = await User.findByIdAndUpdate(userId, {
         $addToSet: {
-          finished: req.params.taskId,
+          failed: req.params.taskId,
         },
         $inc: { rating: -2 },
       });
@@ -336,9 +358,23 @@ module.exports.userController = {
 
   addToConfirmation: async (req, res) => {
     try {
-      const user = await User.findByIdAndUpdate(req.params.id, {
-        $addToSet: {
-          confirmation: req.body.confirmation,
+      const user = await User.findByIdAndUpdate(
+        req.params.id,
+        {
+          $addToSet: {
+            confirmation: {
+              user: req.user.id,
+              task: req.body.task,
+            },
+          },
+        },
+        {
+          new: true,
+        }
+      ).populate({
+        path: "confirmation",
+        populate: {
+          path: "user task",
         },
       });
       return res.json(user);
@@ -349,11 +385,19 @@ module.exports.userController = {
 
   removeFromConfirmation: async (req, res) => {
     try {
-      const user = await User.findByIdAndUpdate(req.params.id, {
-        $pull: {
-          confirmation: req.body.confirmation,
+      const user = await User.findByIdAndUpdate(
+        req.user.id,
+        {
+          $pull: {
+            confirmation: {
+              _id: req.params.id,
+            },
+          },
         },
-      });
+        {
+          new: true,
+        }
+      );
       return res.json(user);
     } catch (error) {
       return res.json({ error: error.message });
