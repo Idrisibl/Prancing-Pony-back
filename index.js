@@ -5,6 +5,7 @@ const cors = require("cors");
 const path = require("path");
 const logger = require("morgan");
 
+
 const app = express();
 
 app.use(cors());
@@ -19,7 +20,44 @@ app.get("/", (req, res) => {
 });
 
 mongoose.connect(process.env.MONGODV_SERVER).then(() => {
-  app.listen(process.env.PORT, () =>
-    console.log(`Server has been started, http://localhost:${process.env.PORT}`)
-  );
+  console.log(`Server has been started, http://localhost:${process.env.PORT}`)
 });
+
+const server = app.listen(process.env.PORT, () =>
+console.log(`Server started on ${process.env.PORT}`)
+);
+
+const io = require('socket.io')(server, {
+  cors: {
+      origin: "http://localhost:3000"
+  }
+})
+
+let activeUsers = []
+
+io.on('connection', (socket) => {
+  socket.on('new-user-add', (newUserId) => {
+      if (!activeUsers.some((user) => user.userId === newUserId)) {
+          activeUsers.push({
+              userId: newUserId,
+              socketId: socket.id
+          })
+      }
+      console.log("Connected Users", activeUsers);
+      io.emit('get-users', activeUsers)
+  })
+
+  socket.on("send-message", (data) => {
+    const {receiverId} = data
+    const user = activeUsers.find((user) => user.userId === receiverId)
+    if (user) {
+      io.to(user.socketId).emit('receive-message', data)
+    }
+  })
+
+  socket.on('disconnect', ()=>{
+      activeUsers = activeUsers.filter((user)=> user.socketId !== socket.id)
+      console.log("User Disconected", activeUsers);
+      io.emit('get-users', activeUsers)
+  })
+})
