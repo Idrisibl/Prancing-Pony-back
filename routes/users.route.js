@@ -7,6 +7,7 @@ const router = Router();
 
 router.get("/", userController.getAllUsers);
 router.get("/:id", userController.getUserById);
+router.get("/authUser/id", authMiddleware, userController.getAuthUser);
 router.post("/register", userController.registerUser);
 router.post("/login", userController.login);
 router.patch(
@@ -15,9 +16,9 @@ router.patch(
   fileMiddleware.single("avatar"),
   userController.editAvatar
 );
-router.patch("/editUser", userController.editUser);
-router.patch("/info", authMiddleware, userController.postInfo);
-router.patch("/bag", userController.fillTheBag);
+router.patch("/editUser", authMiddleware, userController.editUser);
+router.patch("/editInfo", authMiddleware, userController.postInfo);
+router.patch("/bag/:id", authMiddleware, userController.fillTheBag);
 router.patch("/bag/remove", userController.removeFromBag);
 router.patch("/favoutire", authMiddleware, userController.addToFavourite);
 router.patch(
@@ -26,6 +27,7 @@ router.patch(
   userController.removeFromFavourite
 );
 router.patch("/finished/:taskId", authMiddleware, userController.addToFinished);
+router.patch("/failed", authMiddleware, userController.addToFailed);
 router.patch("/friends", authMiddleware, userController.addToFriends);
 router.patch(
   "/friends/remove",
@@ -39,10 +41,13 @@ router.patch(
   userController.removeFromBlacklist
 );
 router.patch("/rating/:id", userController.addToRating);
-router.patch("/responces/:id", userController.addToResponces);
-router.patch("/responces/remove/:id", userController.removeFromResponces);
 router.patch("/confirmation/:id", userController.addToConfirmation);
-router.patch("/confirmation/remove/:id", userController.removeFromConfirmation);
+router.patch(
+  "/confirmation/remove/:id",
+  authMiddleware,
+  userController.removeFromConfirmation
+);
 router.patch("/addWallet", authMiddleware, userController.addWallet);
+router.patch("/wallet/deduct", authMiddleware, userController.deductFromWallet);
 
 module.exports = router;

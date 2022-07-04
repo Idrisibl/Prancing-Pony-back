@@ -12,6 +12,7 @@ const roomsRoute = require('./rooms.route');
 const messageRoute = require('./message.route');
 //const chatRoute = require('./chat.route')
 const chatRoute = require('./chat.route');
+const responseRoute = require("./responses.route");
 
 router.use("/users", usersRoute);
 router.use("/reviews", reviewsRoute);
@@ -22,5 +23,6 @@ router.use("/news", newsRoute);
 router.use("/rooms", roomsRoute)
 router.use("/messages", messageRoute)
 router.use("/chat", chatRoute)
+router.use("/responses", responseRoute);
 
 module.exports = router;

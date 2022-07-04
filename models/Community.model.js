@@ -4,17 +4,24 @@ const communitySchema = mongoose.Schema({
   name: String,
   emblem: {
     type: String,
-    default: "../public/tavern.png",
+    default: "public\\tavern.png",
   },
   description: String,
-  members: [{
-    type: mongoose.SchemaTypes.ObjectId,
-    ref: "User"
-  },
-],
+  members: [
+    {
+      type: mongoose.SchemaTypes.ObjectId,
+      ref: "User",
+    },
+  ],
+  requests: [
+    {
+      type: mongoose.SchemaTypes.ObjectId,
+      ref: "User",
+    },
+  ],
   founder: {
     type: mongoose.SchemaTypes.ObjectId,
-    ref: "User"
+    ref: "User",
   },
   rating: [
     {

@@ -48,6 +48,7 @@ io.on('connection', (socket) => {
   })
 
   socket.on("send-message", (data) => {
+    console.log(data);
     const {receiverId} = data
     const user = activeUsers.find((user) => user.userId === receiverId)
     if (user) {
