@@ -1,6 +1,7 @@
 const { json } = require("express");
 const e = require("express");
 const Community = require("../models/Community.model");
+const User = require("../models/User.model");
 
 module.exports.communityController = {
   postCommunity: async (req, res) => {
@@ -81,17 +82,36 @@ module.exports.communityController = {
 
   addRating: async (req, res) => {
     try {
+      // console.log(req.body.rating);
       const communityFind = await Community.findById(req.params.id);
       const addFunction = await Community.findByIdAndUpdate(communityFind, {
-        $addToSet: {
-          rating: req.body.rating,
-        },
+        rating: req.body.rating
       });
       res.json(addFunction);
     } catch (error) {
       console.error({ error: "Ошибка при добавлении новостей" });
     }
   },
+
+  
+  deleteUser: async (req, res) => {
+    try {
+      // console.log(req.body.rating);
+      const communityFind = await Community.findById(req.params.id);
+      console.log(findMember);
+
+      const deleteFunction = await Community.findByIdAndUpdate(communityFind, {
+        $pull: {
+          members: req.user.id,
+        },
+        rating: req.user.rating - communityFind.rating
+      });
+      res.json(deleteFunction);
+    } catch (error) {
+      console.error({ error: "Ошибка при удалении участника" });
+    }
+  },
+
   deleteCommunity: async (req, res) => {
     try {
       const deleteCommunityFunction = await Community.findByIdAndRemove(
